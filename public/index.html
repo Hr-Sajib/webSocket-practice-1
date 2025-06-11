@@ -14,25 +14,35 @@
   </style>
 </head>
 <body>
-    <h1>Chat App by Socket.io</h1>
-    <input type="text" id="message" placeholder="Enter msg..">
-    <button id="sendBtn">Send</button>
+  <h1>Chat App by Socket.io</h1>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
+  <div id="msglist"></div> <!-- changed from <p> to <div> -->
+  
+  <input type="text" id="message" placeholder="Enter msg..">
+  <button id="sendBtn">Send</button>
 
-        const sendBtn = document.getElementById("sendBtn")
-        const msgInput = document.getElementById('message')
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
 
-        socket.on('message', (message) =>{
-            console.log(message)
-        })
+    const sendBtn = document.getElementById("sendBtn");
+    const msgInput = document.getElementById('message');
+    const msgList = document.getElementById('msglist');
 
-        sendBtn.addEventListener('click', e => {
-            const msg = msgInput.value;
-            socket.emit("user-message", msg)
-        })
-    </script>
+    socket.on('message', (message) => {
+      const msgElement = document.createElement("p"); // ✅ use <p>
+      msgElement.innerText = message;                 // ✅ set actual text
+      msgList.appendChild(msgElement);                // ✅ add to container
+    });
+
+    sendBtn.addEventListener('click', () => {
+      const msg = msgInput.value.trim();
+      if (msg) {
+        socket.emit("user-message", msg);
+        msgInput.value = '';
+      }
+    });
+  </script>
 </body>
+
 </html>
